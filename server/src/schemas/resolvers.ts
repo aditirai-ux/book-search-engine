@@ -1,4 +1,5 @@
 import User from '../models/index.js';
+import { AuthenticationError } from '../utils/auth.js';
 
 interface User {
     id: string;
@@ -6,4 +7,3 @@ interface User {
     password: string;
  }
 
- 
