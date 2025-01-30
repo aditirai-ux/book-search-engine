@@ -3,6 +3,36 @@ import { GraphQLError } from 'graphql';
 import dotenv from 'dotenv';
 dotenv.config();
 
+export const authenticateToken = ({req}: any) => {
+    // Get the token from the request headers
+    let token = req.body.token || req.query.token || req.headers.authorization;
+
+    if (req.headers.authorization) {
+        token = token.split(' ').pop().trim();
+    }
+
+    if (!token) {
+        return req;
+    }
+    
+    try {
+        // Verify the token
+        const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || '', {
+            maxAge: '2hr'});
+        req.user = data; // Add the user to the request object
+    } catch (err) {
+        console.log('Invalid token');
+    }
+    return req;
+}
+
+export const signToken = (username: string, email: string, _id: unknown) => {
+    const payload = { username, email, _id };
+    const secretKey = process.env.JWT_SECRET_KEY;
+
+    return jwt.sign({ data: payload }, secretKey || '', { expiresIn: '2hr' });
+}
+
 export class AuthenticationError extends GraphQLError {
     constructor(message: string) {
       super(message, undefined, undefined, undefined, ['UNAUTHENTICATED']);
