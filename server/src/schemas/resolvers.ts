@@ -1,4 +1,4 @@
-import User from '../models/index.js';
+import  User from '../models/index.js';
 import { signToken, AuthenticationError } from '../utils/auth.js';
 
 interface User {
@@ -39,17 +39,21 @@ interface Context {
 
 const resolvers = {
     Query: {
-        users: async () => {
-            return User.find();
+        Users: async () => {
+            return User.find().populate('savedBooks');
         },
-        user: async (parent: User, { id }: User) => {
-            return User.findById};
+        me: async (_parent: any, {_id }: userArgs): Promise<User | null> => {
+            return await User.findOne( { _id });
+        },
+        },
+    Mutation: {
+        addUser: async (_parent: any, { username, email, password }: AddUserArgs): Promise<{ token: string; user: User }> => {
+            const user = await User.create({ username, email, password });
+            const token = signToken(user);
+            return { token, user };
+        }
 
-
-        },
-        books: async () => {
-            return Book.find();
-        },
+    },
 }
 export default resolvers;
 
