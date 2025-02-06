@@ -1,3 +1,4 @@
+import { saveBook } from '../controllers/user-controller.js';
 import  User from '../models/index.js';
 import { signToken, AuthenticationError } from '../utils/auth.js';
 
@@ -64,8 +65,27 @@ const resolvers = {
             const token = signToken(user.username, user.email, user._id);
             return { token, user };
         },
-
+        saveBook: async (_parent: any, { bookData }: saveBookArgs, context: Context) => {
+            if (context.user) {
+                return await User.findOneAndUpdate(
+                    { _id: context.user.username },
+                    { $addToSet: { savedBooks: bookData } },
+                    { new: true, runValidators: true }
+                );   
+            }
+            throw new AuthenticationError('You need to be logged in to perform this action!');
+        },
+        removeBook: async (_parent: any, { bookId }: removeBookArgs, context: Context): Promise<User | null> => {
+            if (context.user) {
+                return await User.findOneAndUpdate(
+                    { _id: context.user.username },
+                    { $pull: { savedBooks: { bookId } } },
+                    { new: true }
+                );
+            }
+            throw new AuthenticationError('You need to be logged in to perform this action!');
     },
 }
-export default resolvers;
+};
 
+export default resolvers;
