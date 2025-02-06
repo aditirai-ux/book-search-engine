@@ -1,14 +1,14 @@
 const typeDefs = `
 type User {
-    id: ID!
+    _id: ID
     username: String
     email: String
     bookCount: Int
     savedBooks: [Book]}
 
 type Book {
-    bookId: ID!
-    title: String!
+    bookId: ID
+    title: String
     authors: [String]
     description: String
     image: String
@@ -23,13 +23,18 @@ input BookInput {
     image: String
     link: String}
 
-input UserInput {}
+type Auth {
+    token: String
+    user: User
+}
+
+type me {
+    user: User
+}
 
 type Query {
-    users: [User]
-    user(id: ID!): User
-    books: [Book]
-    book(id: ID!): Book
+    Users: [User]
+    me: User
 }
 
 type Mutation {
@@ -41,3 +46,5 @@ type Mutation {
     deleteBook(id: ID!): Book
 }
 `;
+
+export default typeDefs;
