@@ -13,6 +13,13 @@ import type { User } from '../models/User';
 const SignupForm = ({}: { handleModalClose: () => void }) => {
   // set initial form state
   const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  // add mutation
+  const [addUser, { error }] = useMutation(ADD_USER);
+  console.log('addUser', addUser);
+  if (error) {
+    console.error(error);
+  }
+  
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
@@ -34,14 +41,17 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     }
 
     try {
-      const response = await createUser(userFormData);
+      const { data } = await addUser({
+        variables: { ...userFormData },
+      });
+      // const response = await createUser(userFormData);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      // if (!response.ok) {
+      //   throw new Error('something went wrong!');
+      // }
 
-      const { token } = await response.json();
-      Auth.login(token);
+      // const { token } = await response.json();
+      Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
