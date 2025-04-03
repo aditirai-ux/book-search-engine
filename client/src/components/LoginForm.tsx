@@ -16,6 +16,12 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
+  const [loginUser, { error }] = useMutation(LOGIN_USER);
+  console.log(loginUser);
+  if (error) {
+    console.error(error);
+  }
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
