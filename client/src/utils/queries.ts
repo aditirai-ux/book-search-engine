@@ -18,3 +18,37 @@ export const GET_ME = gql`
         }
     }
 `;
+
+export const GET_ALL_USERS = gql`
+    query getAllUsers {
+        Users {
+            _id
+            username
+            email
+            bookCount
+            savedBooks {
+                bookId
+                authors
+                title
+                image
+                description
+                link
+            }
+        }
+    }
+`;
+//             username
+//             email
+//             bookCount
+//             savedBooks {
+//                 bookId
+//                 authors
+//                 title
+//                 image
+//                 description
+//                 link
+//             }
+//         }
+//     }
+// `;
+// `;
